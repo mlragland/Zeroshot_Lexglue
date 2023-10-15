@@ -1,5 +1,8 @@
+import sys
 import json
 import os
+sys.path.append('/content/Zeroshot_Lexglue/')  # Add the parent directory to sys.path
+sys.path.append('/content/Zeroshot_Lexglue/build_instructions/')
 from data import DATA_DIR
 from datasets import load_dataset
 import random
@@ -8,13 +11,13 @@ from templates import TEMPLATES
 
 # Load test dataset and labels
 predict_dataset = load_dataset("lexlms/lex_glue_v2", 'case_hold', split="test",
-                               use_auth_token='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')
+                               token='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')
 random.seed(42)
-random_ids = random.sample(range(len(predict_dataset)), k=1000)
+random_ids = random.sample(range(len(predict_dataset)), k=10)
 predict_dataset = predict_dataset.select(random_ids)
 
 total_input = ''
-with open(os.path.join(DATA_DIR, 'instruction-following-examples', 'case_hold.jsonl'), 'w') as file:
+with open(os.path.join(DATA_DIR, 'instruction_following_examples/', 'case_hold.jsonl'), 'w') as file:
     for idx, sample in enumerate(predict_dataset):
         text_input = TEMPLATES['case_hold']['INPUT_INTRODUCTORY_TEXT'] + f'\n"{sample["contexts"][0].replace("<HOLDING>", "[Masked Holding]")}"\n\n'
         text_input += TEMPLATES['case_hold']['OPTIONS_PRESENTATION_TEXT']
@@ -28,10 +31,7 @@ with open(os.path.join(DATA_DIR, 'instruction-following-examples', 'case_hold.js
         total_input += text_input
 
 # Count tokens and cost
-tokenizer = tiktoken.encoding_for_model("gpt-3.5-turbo")
+tokenizer = tiktoken.encoding_for_model("gpt-4")
 total_n_tokens = len(tokenizer.encode(total_input)) + 100 * 1000
 print(f'The total number of tokens is {total_n_tokens}, with an '
-      f'estimated processing cost of {total_n_tokens * (0.002/1000):.2f}$.')
-
-
-
+      f'estimated processing cost of {total_n_tokens * (0.003/1000):.2f}$.')
