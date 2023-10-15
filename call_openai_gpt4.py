@@ -50,7 +50,7 @@ def main(args):
             dataset[idx]['prediction'] = predictions[idx]['prediction']
             print(f'Predictions for example #{idx} is already available!')
             continue
-        if args.model_name == 'gpt-3.5-turbo':
+        if args.model_name == 'gpt-4':
             while True:
                 try:
                     response = openai.ChatCompletion.create(
@@ -91,7 +91,7 @@ def main(args):
 # The 'Arg Parser' determines the paramaters that define whether the data is processed as few shot or zero-shot
 parser = argparse.ArgumentParser(description='Prompting GPT')
 parser.add_argument("--dataset_name", type=str, default='case_hold', help="Name of dataset as stored on HF")
-parser.add_argument("--model_name", type=str, default='gpt-3.5-turbo', help="GPT model name")
+parser.add_argument("--model_name", type=str, default='gpt-4', help="GPT model name")
 #parser.add_argument("--few_shot_k", type=int, default=8, help="Number of k-shots")
 parser.add_argument("--few_shot_k", type=int, default=0, help="Number of k-shots")
 parser.add_argument("--truncate_demonstrations", type=int, default=100, help="Truncation of demonstrations")
